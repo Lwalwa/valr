@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SettingPersistent">
+    <option name="settingEntity">
+      <SettingEntity>
+        <option name="enginMaps">
+          <map>
+            <entry key="apiKey" value="" />
+            <entry key="apiSecret" value="" />
+            <entry key="appId" value="" />
+          </map>
+        </option>
+        <option name="modelType" value="Llama3_70" />
+        <option name="selectedEngin" value="Llama3_70 (Better English Support)" />
+      </SettingEntity>
+    </option>
+  </component>
+</project>

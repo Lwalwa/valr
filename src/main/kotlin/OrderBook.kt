@@ -1,9 +1,6 @@
 package com.valr
 
-import java.util.Collections
-import java.util.Date
-import java.util.TreeMap
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -15,10 +12,13 @@ class OrderBook {
     private var tradeSequenceId: Double = 1.0
     private val lock = ReentrantLock()
 
+    private var isOrderBookModified = false
+
     fun addOrder(order: Order) {
         lock.withLock {
             val orderMap = if (order.type == OrderType.BUY) buyOrders else sellOrders
             orderMap.computeIfAbsent(order.price) { mutableListOf() }.add(order)
+            isOrderBookModified = true
             matchOrders()
         }
     }
@@ -49,12 +49,15 @@ class OrderBook {
                 )
             }
 
-            return OrderBookResponse(
+            val response = OrderBookResponse(
                 asks = asks,
                 bids = bids,
                 lastChange = Date().toString(),
-                sequenceNumber = sequenceNumber++
+                sequenceNumber = if (isOrderBookModified) sequenceNumber++ else sequenceNumber
             )
+
+            isOrderBookModified = false
+            return response
         }
     }
 
@@ -74,17 +77,20 @@ class OrderBook {
                     val highestBuy = highestBuyEntry.value.first()
                     val lowestSell = lowestSellEntry.value.first()
                     val tradeQuantity = minOf(highestBuy.quantity, lowestSell.quantity)
+                    val tradePrice = lowestSell.price
+
                     val trade = Trade(
-                        price = lowestSell.price.toString(),
+                        price = tradePrice.toString(),
                         quantity = tradeQuantity.toString(),
                         currencyPair = "BTCZAR",
                         tradedAt = Date().toString(),
-                        takerSide = if (highestBuy.type == OrderType.BUY) "sell" else "buy",
+                        takerSide = if (highestBuy.type == OrderType.BUY) "buy" else "sell",
                         sequenceId = tradeSequenceId++,
                         id = UUID.randomUUID().toString(),
-                        quoteVolume = (lowestSell.price * tradeQuantity).toString()
+                        quoteVolume = (tradePrice * tradeQuantity).toString()
                     )
                     trades.add(trade)
+
                     updateOrRemoveOrder(highestBuyEntry, tradeQuantity)
                     updateOrRemoveOrder(lowestSellEntry, tradeQuantity)
                 } else {

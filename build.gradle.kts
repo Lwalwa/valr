@@ -15,6 +15,7 @@ dependencies {
     implementation("io.vertx:vertx-web:4.4.8")
     implementation("io.vertx:vertx-auth-jwt:4.4.8")
     implementation("io.vertx:vertx-core:4.4.8")
+    implementation("io.vertx:vertx-web-client:4.4.8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")

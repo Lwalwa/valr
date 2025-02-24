@@ -1,15 +1,6 @@
 package com.valr
 
-
 import kotlinx.serialization.Serializable
-
-@Serializable
-data class Order(
-    val id: String,
-    val type: OrderType,
-    val price: Double,
-    val quantity: Double
-)
 
 @Serializable
 data class Trade(
@@ -39,8 +30,3 @@ data class OrderBookEntry(
     val currencyPair: String,
     val orderCount: Int
 )
-
-@Serializable
-enum class OrderType {
-    BUY, SELL
-}
